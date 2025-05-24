@@ -1,0 +1,34 @@
+{
+  "name": "bun-markdown-display",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.tsx",
+  "module": "src/index.tsx",
+  "scripts": {
+    "dev": "bun --hot src/index.tsx",
+    "start": "NODE_ENV=production bun src/index.tsx",
+    "build": "bun run build.ts"
+  },
+  "dependencies": {
+    "@tailwindcss/typography": "^0.5.16",
+    "@types/highlight.js": "^10.1.0",
+    "@types/marked": "^6.0.0",
+    "@types/sanitize-html": "^2.16.0",
+    "bun-markdown-display": "file:",
+    "bun-plugin-tailwind": "^0.0.14",
+    "highlight.js": "^11.11.1",
+    "marked": "^15.0.12",
+    "marked-highlight": "^2.2.1",
+    "react": "^19",
+    "react-dom": "^19",
+    "react-router-dom": "^7.6.0",
+    "sanitize-html": "^2.17.0",
+    "tailwindcss": "^4.0.6"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/react": "^19",
+    "@types/react-dom": "^19"
+  }
+}
