@@ -1,12 +1,12 @@
 #!/usr/bin/env bun
-import { build, type BuildConfig } from "bun";
-import plugin from "bun-plugin-tailwind";
-import { existsSync } from "fs";
-import { rm } from "fs/promises";
-import path from "path";
+import { build, type BuildConfig } from 'bun';
+import plugin from 'bun-plugin-tailwind';
+import { existsSync } from 'fs';
+import { rm } from 'fs/promises';
+import path from 'path';
 
 // Print help text if requested
-if (process.argv.includes("--help") || process.argv.includes("-h")) {
+if (process.argv.includes('--help') || process.argv.includes('-h')) {
   console.log(`
 🏗️  Bun Build Script
 
@@ -41,17 +41,17 @@ const toCamelCase = (str: string): string => {
 };
 
 // Helper function to parse a value into appropriate type
-const parseValue = (value: string): any => {
+const parseValue = (value: string): boolean | number | string | Array<string> => {
   // Handle true/false strings
-  if (value === "true") return true;
-  if (value === "false") return false;
+  if (value === 'true') return true;
+  if (value === 'false') return false;
 
   // Handle numbers
   if (/^\d+$/.test(value)) return parseInt(value, 10);
   if (/^\d*\.\d+$/.test(value)) return parseFloat(value);
 
   // Handle arrays (comma-separated)
-  if (value.includes(",")) return value.split(",").map(v => v.trim());
+  if (value.includes(',')) return value.split(',').map(v => v.trim());
 
   // Default to string
   return value;
@@ -64,17 +64,17 @@ function parseArgs(): Partial<BuildConfig> {
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    if (!arg.startsWith("--")) continue;
+    if (!arg.startsWith('--')) continue;
 
     // Handle --no-* flags
-    if (arg.startsWith("--no-")) {
+    if (arg.startsWith('--no-')) {
       const key = toCamelCase(arg.slice(5));
       config[key] = false;
       continue;
     }
 
     // Handle --flag (boolean true)
-    if (!arg.includes("=") && (i === args.length - 1 || args[i + 1].startsWith("--"))) {
+    if (!arg.includes('=') && (i === args.length - 1 || args[i + 1].startsWith('--'))) {
       const key = toCamelCase(arg.slice(2));
       config[key] = true;
       continue;
@@ -84,8 +84,8 @@ function parseArgs(): Partial<BuildConfig> {
     let key: string;
     let value: string;
 
-    if (arg.includes("=")) {
-      [key, value] = arg.slice(2).split("=", 2);
+    if (arg.includes('=')) {
+      [key, value] = arg.slice(2).split('=', 2);
     } else {
       key = arg.slice(2);
       value = args[++i];
@@ -95,8 +95,8 @@ function parseArgs(): Partial<BuildConfig> {
     key = toCamelCase(key);
 
     // Handle nested properties (e.g. --minify.whitespace)
-    if (key.includes(".")) {
-      const [parentKey, childKey] = key.split(".");
+    if (key.includes('.')) {
+      const [parentKey, childKey] = key.split('.');
       config[parentKey] = config[parentKey] || {};
       config[parentKey][childKey] = parseValue(value);
     } else {
@@ -109,7 +109,7 @@ function parseArgs(): Partial<BuildConfig> {
 
 // Helper function to format file sizes
 const formatFileSize = (bytes: number): string => {
-  const units = ["B", "KB", "MB", "GB"];
+  const units = ['B', 'KB', 'MB', 'GB'];
   let size = bytes;
   let unitIndex = 0;
 
@@ -121,11 +121,11 @@ const formatFileSize = (bytes: number): string => {
   return `${size.toFixed(2)} ${units[unitIndex]}`;
 };
 
-console.log("\n🚀 Starting build process...\n");
+console.log('\n🚀 Starting build process...\n');
 
 // Parse CLI arguments with our magical parser
 const cliConfig = parseArgs();
-const outdir = cliConfig.outdir || path.join(process.cwd(), "dist");
+const outdir = cliConfig.outdir || path.join(process.cwd(), 'dist');
 
 if (existsSync(outdir)) {
   console.log(`🗑️ Cleaning previous build at ${outdir}`);
@@ -135,10 +135,10 @@ if (existsSync(outdir)) {
 const start = performance.now();
 
 // Scan for all HTML files in the project
-const entrypoints = [...new Bun.Glob("**.html").scanSync("src")]
-  .map(a => path.resolve("src", a))
-  .filter(dir => !dir.includes("node_modules"));
-console.log(`📄 Found ${entrypoints.length} HTML ${entrypoints.length === 1 ? "file" : "files"} to process\n`);
+const entrypoints = [...new Bun.Glob('**.html').scanSync('src')]
+  .map(a => path.resolve('src', a))
+  .filter(dir => !dir.includes('node_modules'));
+console.log(`📄 Found ${entrypoints.length} HTML ${entrypoints.length === 1 ? 'file' : 'files'} to process\n`);
 
 // Build all the HTML files
 const result = await build({
@@ -146,10 +146,10 @@ const result = await build({
   outdir,
   plugins: [plugin],
   minify: true,
-  target: "browser",
-  sourcemap: "linked",
+  target: 'browser',
+  sourcemap: 'linked',
   define: {
-    "process.env.NODE_ENV": JSON.stringify("production"),
+    'process.env.NODE_ENV': JSON.stringify('production'),
   },
   ...cliConfig, // Merge in any CLI-provided options
 });
@@ -158,9 +158,9 @@ const result = await build({
 const end = performance.now();
 
 const outputTable = result.outputs.map(output => ({
-  "File": path.relative(process.cwd(), output.path),
-  "Type": output.kind,
-  "Size": formatFileSize(output.size),
+  'File': path.relative(process.cwd(), output.path),
+  'Type': output.kind,
+  'Size': formatFileSize(output.size),
 }));
 
 console.table(outputTable);

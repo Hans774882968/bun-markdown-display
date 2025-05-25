@@ -151,6 +151,17 @@ useEffect(() => {
 }, [htmlContent]);
 ```
 
+## 接入 eslint
+
+找了个 Vite + React 的 eslint 配置文件。
+
+```powershell
+bun add -D eslint globals
+@eslint/js typescript-eslint eslint-plugin-react-hooks eslint-plugin-react-refresh
+```
+
+然后配置：`"lint": "eslint ."`。使用：`bun lint --fix`。
+
 ## 打包流程（并没有考虑部署上线）
 
 我确实不喜欢 bun 项目模板的项目结构，所以调整成了这样：
@@ -240,6 +251,27 @@ main();
 ```
 
 执行`bun build:all`即可完成打包。执行`bun run:dist`即可启动后端项目。前端项目和后端接口跑在同一个端口 5202 下。
+
+## 为所有页面添加统一的导航栏和页脚
+
+给 Cursor 的 Prompt：
+
+> 请为每个页面添加统一的导航栏和页脚，组件命名为 Layout.tsx。
+>
+> 导航栏：要求页面滚动时一直贴着视窗顶部，但在顶部时不要遮挡页面其他部分的内容。导航栏内的左侧有一个“Markdown 文章展示”加粗，是指向首页的链接。右侧有一个 GitHub 图标，也是链接，地址为 https://github.com/Hans774882968/bun-markdown-display
+>
+> 页脚：Copyright.tsx。分两行，第一行是 Made with ❤ in {currentYear} by，第二行是一个链接，文本为 Hans，链接为 https://github.com/Hans774882968
+
+出来效果很不错，微调一下：
+
+> 1. nav-brand 离左侧 80px、GitHub 图标离右侧 80px。
+> 2. 页脚的“Hans”左侧加一个 GitHub 图标，并加粗。
+> 3. 导航栏和页脚的背景颜色应和 main-content 的黑色接近但又略有差别，并添加阴影，使得两者和 main-content 之间有视觉上的差别。记得对应修改文字颜色为某种白色。
+> 4. 导航栏的“Markdown 文章展示”左边加一个 Markdown 的图标。导航栏左侧添加面包屑。首页保持原样，文字页面的显示类似于“Markdown 文章展示 > 文章”。
+
+效果：
+
+![](./README_assets/2-导航栏和页脚.jpg)
 
 ## 体验感受
 

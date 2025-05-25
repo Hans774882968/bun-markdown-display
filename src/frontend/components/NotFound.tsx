@@ -1,8 +1,8 @@
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from 'react-router-dom';
 
 export function NotFound() {
   const [searchParams] = useSearchParams();
-  const aid = searchParams.get("aid");
+  const aid = searchParams.get('aid');
 
   return (
     <div className="max-w-2xl mx-auto text-center mt-20">

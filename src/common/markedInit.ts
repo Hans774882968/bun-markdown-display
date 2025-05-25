@@ -1,7 +1,7 @@
-import hljs from "highlight.js";
-import { RendererObject } from "marked";
-import { marked } from "marked";
-import { markedHighlight } from "marked-highlight";
+import hljs from 'highlight.js';
+import { RendererObject } from 'marked';
+import { marked } from 'marked';
+import { markedHighlight } from 'marked-highlight';
 
 // 配置 marked 使用 marked-highlight 和 highlight.js
 marked.use(

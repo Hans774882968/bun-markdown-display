@@ -1,18 +1,18 @@
-import { useEffect, useState, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { marked } from '@/common/markedInit';
-import sanitizeHtml from "sanitize-html";
-import mermaid from "mermaid";
-import "highlight.js/styles/github-dark.css";
-import { ArticleContent } from "@/types/article";
-import { ApiResponse } from "@/types/api";
+import sanitizeHtml from 'sanitize-html';
+import mermaid from 'mermaid';
+import 'highlight.js/styles/github-dark.css';
+import { ArticleContent } from '@/types/article';
+import { ApiResponse } from '@/types/api';
 
 export function Article() {
   const { aid } = useParams<{ aid: string }>();
   const navigate = useNavigate();
   const [article, setArticle] = useState<ArticleContent | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [htmlContent, setHtmlContent] = useState<string>("");
+  const [htmlContent, setHtmlContent] = useState<string>('');
   const articleRef = useRef<HTMLDivElement>(null);
 
   // Initialize mermaid
@@ -48,8 +48,8 @@ export function Article() {
 
         setHtmlContent(sanitizedHtml);
       } catch (err) {
-        console.error("Error processing markdown:", err);
-        setError("Failed to process article content");
+        console.error('Error processing markdown:', err);
+        setError('Failed to process article content');
       }
     };
 
@@ -89,7 +89,8 @@ export function Article() {
         }
       })
       .catch((err) => {
-        setError("Failed to load article");
+        console.error('Failed to load article', err);
+        setError('Failed to load article');
       });
   }, [aid, navigate]);
 
