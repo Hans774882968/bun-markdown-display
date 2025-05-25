@@ -14,4 +14,4 @@ export interface ArticleInfo {
 export interface ArticleContent {
   content: string;
   title: string;
-} 
+}

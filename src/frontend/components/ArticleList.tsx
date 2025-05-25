@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Article } from "../types/article";
-import { ApiResponse } from "../types/api";
+import { Article } from "../../types/article";
+import { ApiResponse } from "../../types/api";
 
 export function ArticleList() {
   const [articles, setArticles] = useState<Article[]>([]);

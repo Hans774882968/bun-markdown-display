@@ -3,12 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "main": "src/index.tsx",
-  "module": "src/index.tsx",
+  "main": "src/backend/beIndex.tsx",
+  "module": "src/backend/beIndex.tsx",
   "scripts": {
-    "dev": "bun --hot src/index.tsx",
-    "start": "NODE_ENV=production bun src/index.tsx",
-    "build": "bun run build.ts"
+    "dev": "bun --hot src/backend/beIndex.tsx",
+    "start": "NODE_ENV=production bun src/backend/beIndex.tsx",
+    "build:all": "bun build:fe && bun build:be",
+    "build:fe": "bun run build.ts",
+    "build:be": "bun build:be1 && bun build:be2",
+    "build:be1": "bun build src/backend/beIndex.tsx --outdir dist/backend --target bun --external '@/index.html' --production",
+    "build:be2": "bun run scripts/fixHtmlImport.ts",
+    "run:dist": "bun run dist/backend/beIndex.js"
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.16",
@@ -20,6 +25,7 @@
     "highlight.js": "^11.11.1",
     "marked": "^15.0.12",
     "marked-highlight": "^2.2.1",
+    "mermaid": "^11.6.0",
     "react": "^19",
     "react-dom": "^19",
     "react-router-dom": "^7.6.0",

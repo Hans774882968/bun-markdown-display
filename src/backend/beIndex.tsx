@@ -1,43 +1,22 @@
 import { serve } from "bun";
 import { join } from "path";
 import { readFileSync } from "fs";
-import index from "./index.html";
-import { ArticleInfo } from "./types/article";
+import index from "@/index.html";
+import { ArticleInfo } from "@/types/article";
 
 function readArticlesJson() {
   const articlesJsonPath = join("mds", "articles.json");
   return JSON.parse(readFileSync(articlesJsonPath, "utf-8"));
 }
 
-// TODO: 解决 build 产物不能执行的问题
 const server = serve({
-  port: process.env.NODE_ENV === "development" ? 5202 : 5201,
+  port: process.env.NODE_ENV === "production" ? 5202 : 5201,
   routes: {
-    // Serve index.html for all unmatched routes.
+    // Serve index.html for all unmatched routes. 这样才能渲染前端的自定义404页面。设为 "/" 会返回HTTP状态码404
     "/*": index,
     "/api/allArticles": handleAllArticles,
     "/api/article/:aid": handleArticle,
   },
-  // 使用 fetch 处理所有路由
-  async fetch(req) {
-    const url = new URL(req.url);
-
-    // 处理 API 路由
-    if (url.pathname.startsWith("/api")) {
-      if (url.pathname === "/api/allArticles") {
-        return handleAllArticles(req);
-      }
-      if (url.pathname.startsWith("/api/article/")) {
-        return handleArticle(req);
-      }
-    }
-
-    // 默认返回 index.html
-    return new Response(index, {
-      headers: { "Content-Type": "text/html" },
-    });
-  },
-
   // 开发配置
   development: process.env.NODE_ENV !== "production" && {
     // Enable browser hot reloading in development
@@ -48,7 +27,6 @@ const server = serve({
   },
 });
 
-// 抽离 API 处理函数
 async function handleAllArticles(req: Request): Promise<Response> {
   try {
     const articlesData = readArticlesJson();
@@ -83,3 +61,5 @@ async function handleArticle(req: Request): Promise<Response> {
     return Response.json({ code: 500, msg: "Internal server error", data: null });
   }
 }
+
+console.log('[bun-markdown-display] server is running at port', server.port);
