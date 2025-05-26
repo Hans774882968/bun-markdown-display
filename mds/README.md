@@ -151,9 +151,108 @@ useEffect(() => {
 }, [htmlContent]);
 ```
 
+## 支持输入`[TOC]`生成目录，类似于 Typora
+
+效果：
+
+![](./README_assets/3-生成TOC.jpg)
+
+TOC 是 Table of Contents 的缩写，表示文章的目录。问了 deepseek（Prompt：“有同时支持 TOC 的生成和标题 ID 生成的 marked 的 renderer 的 npm 包推荐吗”），也查了搜索引擎，没找到提供这个功能的包。还是决定自己写代码。[src/common/markedInit.ts](https://github.com/Hans774882968/bun-markdown-display/blob/main/src/common/markedInit.ts)：
+
+```ts
+import { marked, RendererObject, Tokens } from "marked";
+
+const usedIds = new Set<string>();
+function generateUniqueId(text: string) {
+  let counter = 1;
+  let id = `${text}-${counter}`;
+  while (usedIds.has(id)) {
+    counter++;
+    id = `${text}-${counter}`;
+  }
+  usedIds.add(id);
+  return id;
+}
+
+// Custom renderer for mermaid code blocks
+const wrapMermaidDivRenderer: RendererObject = {
+  code({ lang, text }) {
+    if (lang === "mermaid") {
+      return `<div class="mermaid">${text}</div>`;
+    }
+    return false; // use default rendering
+  },
+};
+
+const addIdToHeadingRenderer: RendererObject = {
+  heading({ text, depth }) {
+    const id = generateUniqueId(text);
+    return `<h${depth} id="${id}">${text}</h${depth}>\n`;
+  },
+};
+
+marked.use({ renderer: wrapMermaidDivRenderer });
+marked.use({ renderer: addIdToHeadingRenderer });
+
+// 提取标题结构
+export const extractHeadings = (markdown: string) => {
+  const tokens = marked.lexer(markdown);
+  return tokens.filter(
+    (token) => token.type === "heading"
+  ) as Array<Tokens.Heading>;
+};
+
+// 生成目录HTML
+export const generateTOC = (headings: Array<Tokens.Heading>) => {
+  if (headings.length === 0) return "";
+
+  let tocHtml = '<div class="article-toc">\n<ul>\n';
+
+  headings.forEach((heading) => {
+    const { text, depth } = heading;
+    const id = generateUniqueId(text);
+
+    tocHtml += `<li class="toc-item toc-level-${depth}">`;
+    tocHtml += `<a href="#${id}">${text}</a>`;
+    tocHtml += "</li>\n";
+  });
+
+  tocHtml += "</ul>\n</div>";
+  return tocHtml;
+};
+
+// 处理 [TOC] 标记入口
+export const processTOC = (markdown: string) => {
+  usedIds.clear();
+  const headings = extractHeadings(markdown);
+  const tocHtml = generateTOC(headings);
+  usedIds.clear();
+  return markdown
+    .split("\n")
+    .map((ln) => {
+      return ln.trim() === "[TOC]" || ln.trim() === "[toc]" ? tocHtml : ln;
+    })
+    .join("\n");
+};
+```
+
+组件在`useEffect`中，在调用`const result = marked(article.content)`，先调用`processTOC`函数。代码会先执行`processTOC`，再执行`wrapMermaidDivRenderer, addIdToHeadingRenderer`。两者都会用到全局变量`usedIds`，所以在组件挂载时，要保证`usedIds`是空的。在生成完`TOC`后，`addIdToHeadingRenderer`还会用到这个变量，所以还需要再清空一次`usedIds`。
+
+`sanitizeHtml`记得传入：
+
+```typescript
+'li': ['class'], // For TOC
+'h1': ['id'],
+'h2': ['id'],
+'h3': ['id'],
+'h4': ['id'],
+'h5': ['id'],
+'h6': ['id'],
+```
+
 ## 接入 eslint
 
-找了个 Vite + React 的 eslint 配置文件。
+找了个 Vite + React 的项目模板的 eslint 配置文件。
 
 ```powershell
 bun add -D eslint globals
@@ -262,7 +361,14 @@ main();
 >
 > 页脚：Copyright.tsx。分两行，第一行是 Made with ❤ in {currentYear} by，第二行是一个链接，文本为 Hans，链接为 https://github.com/Hans774882968
 
-出来效果很不错，微调一下：
+出来效果很不错。看了下代码，生成了一个带`children`入参的`Layout.tsx`，图标库选用了`react-icons`：
+
+```typescript
+import { FaGithub } from "react-icons/fa";
+import { SiMarkdown } from "react-icons/si";
+```
+
+微调一下：
 
 > 1. nav-brand 离左侧 80px、GitHub 图标离右侧 80px。
 > 2. 页脚的“Hans”左侧加一个 GitHub 图标，并加粗。

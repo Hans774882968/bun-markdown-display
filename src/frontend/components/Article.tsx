@@ -1,11 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { marked } from '@/common/markedInit';
+import { marked, processTOC } from '@/common/markedInit';
 import sanitizeHtml from 'sanitize-html';
 import mermaid from 'mermaid';
 import 'highlight.js/styles/github-dark.css';
 import { ArticleContent } from '@/types/article';
 import { ApiResponse } from '@/types/api';
+import './toc.css';
 
 export function Article() {
   const { aid } = useParams<{ aid: string }>();
@@ -30,8 +31,9 @@ export function Article() {
 
     const processMarkdown = async () => {
       try {
+        const mdWithToc = processTOC(article.content);
         // Handle both Promise and string return types from marked()
-        const result = marked(article.content);
+        const result = marked(mdWithToc);
         const html = typeof result === 'string' ? result : await result;
         
         const sanitizedHtml = sanitizeHtml(html, {
@@ -42,7 +44,14 @@ export function Article() {
             'pre': ['class'],
             // 关键修复：允许 span 的 class 属性（hljs 生成的元素）
             'span': ['class'],
-            'div': ['class'] // Allow class attribute for mermaid divs
+            'div': ['class'], // Allow class attribute for mermaid divs
+            'li': ['class'], // For TOC
+            'h1': ['id'],
+            'h2': ['id'],
+            'h3': ['id'],
+            'h4': ['id'],
+            'h5': ['id'],
+            'h6': ['id'],
           }
         });
 

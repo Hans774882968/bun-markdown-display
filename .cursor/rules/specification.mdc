@@ -1,0 +1,22 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+该项目实现markdown文章的渲染、添加、修改等功能。技术栈为Bun+React19+Tailwind CSS4+marked+react-icons。生成代码时优先考虑使用这些技术。
+
+## 前端规范
+
+- 生成样式时使用 Tailwind CSS
+- 文件命名使用小驼峰命名法
+- 用 Bun 作为包管理器
+
+## React 规范
+
+- 遵循 React 最佳实践
+- 使用 React Hooks
+
+## 后端规范
+
+
+- api的请求参数和返回值类型都放在 src/types 下，让前端代码也能引用。
