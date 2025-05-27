@@ -1,30 +1,47 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Article } from '../../types/article';
-import { ApiResponse } from '../../types/api';
+import { hansRequest } from '@/common/hansRequest';
+import { toast } from 'sonner';
 
 export function ArticleList() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchArticles = () => {
+    setIsLoading(true);
+    setError(null);
+    hansRequest.get<Article[]>('/api/allArticles')
+      .then((data) => {
+        setArticles(data);
+      })
+      .catch(() => {
+        toast.error('加载文章列表失败');
+        setError('加载文章列表失败');
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
 
   useEffect(() => {
-    fetch('/api/allArticles')
-      .then((res) => res.json())
-      .then((data: ApiResponse<Article[]>) => {
-        if (data.code === 200 && data.data) {
-          setArticles(data.data);
-        } else {
-          setError(data.msg);
-        }
-      })
-      .catch((err) => {
-        console.error('Failed to load articles', err);
-        setError('Failed to load articles');
-      });
+    fetchArticles();
   }, []);
 
   if (error) {
-    return <div className="text-red-500">{error}</div>;
+    return (
+      <div className="text-red-500 text-center flex flex-col items-center gap-4">
+        <div>{error}</div>
+        <button
+          className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 cursor-pointer"
+          onClick={fetchArticles}
+          disabled={isLoading}
+        >
+          {isLoading ? '重试中...' : '重试'}
+        </button>
+      </div>
+    );
   }
 
   return (

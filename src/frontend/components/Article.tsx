@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { marked, processTOC } from '@/common/markedInit';
 import sanitizeHtml from 'sanitize-html';
@@ -7,6 +7,8 @@ import 'highlight.js/styles/github-dark.css';
 import { ArticleContent } from '@/types/article';
 import { ApiResponse } from '@/types/api';
 import './toc.css';
+import { toast } from 'sonner';
+import { errorToStr } from '@/common/errorToStr';
 
 export function Article() {
   const { aid } = useParams<{ aid: string }>();
@@ -14,6 +16,7 @@ export function Article() {
   const [article, setArticle] = useState<ArticleContent | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [htmlContent, setHtmlContent] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
   const articleRef = useRef<HTMLDivElement>(null);
 
   // Initialize mermaid
@@ -79,36 +82,62 @@ export function Article() {
         });
       } catch (error) {
         console.error('Mermaid rendering error:', error);
+        toast.error(errorToStr(error));
       }
     }
   }, [htmlContent]);
 
-  useEffect(() => {
-    if (!aid) return;
+  const fetchArticle = useCallback(
+    () => {
+      if (!aid) return;
+    
+      setIsLoading(true);
+      setError(null);
+    
+      fetch(`/api/article/${aid}`)
+        .then((res) => res.json())
+        .then((data: ApiResponse<ArticleContent>) => {
+          if (data.code === 404) {
+            navigate(`/404?aid=${aid}`);
+          } else if (!data.code && data.data) {
+            setArticle(data.data);
+          } else {
+            setError(data.msg);
+          }
+        })
+        .catch((err) => {
+          console.error(`加载文章 ${aid} 失败`, err);
+          toast.error(`加载文章 ${aid} 失败`);
+          setError(`加载文章 ${aid} 失败`);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    },
+    [aid, navigate]
+  );
 
-    fetch(`/api/article/${aid}`)
-      .then((res) => res.json())
-      .then((data: ApiResponse<ArticleContent>) => {
-        if (data.code === 404) {
-          navigate(`/404?aid=${aid}`);
-        } else if (data.code === 200 && data.data) {
-          setArticle(data.data);
-        } else {
-          setError(data.msg);
-        }
-      })
-      .catch((err) => {
-        console.error('Failed to load article', err);
-        setError('Failed to load article');
-      });
-  }, [aid, navigate]);
+  useEffect(() => {
+    fetchArticle();
+  }, [fetchArticle]);
 
   if (error) {
-    return <div className="text-red-500">{error}</div>;
+    return (
+      <div className="text-red-500 text-center flex flex-col items-center gap-4">
+        <div>{error}</div>
+        <button
+          className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 cursor-pointer"
+          onClick={fetchArticle}
+          disabled={isLoading}
+        >
+          {isLoading ? '重试中...' : '重试'}
+        </button>
+      </div>
+    );
   }
 
   if (!article) {
-    return <div>Loading...</div>;
+    return <div className="text-center">Loading...</div>;
   }
 
   return (

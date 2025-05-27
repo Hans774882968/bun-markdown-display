@@ -37,3 +37,12 @@ Production - serve a full-stack production build
     bun start
 
 Happy bunning! 🐇
+
+TODO:
+
+1. 主题切换
+2. Copyright 组件 MutationObserver
+3. 雪花算法生成用户 id
+4. 用户添加 isAdmin 并为 admin 提供注册页面
+5. 登出
+6. 写文章功能

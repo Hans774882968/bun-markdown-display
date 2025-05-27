@@ -20,6 +20,8 @@ bun 是一个新兴的 JavaScript 运行时，旨在提供比 Node.js 更快的�
 
 ## 初始化项目
 
+[为 Cursor 指定项目规范](https://github.com/Hans774882968/bun-markdown-display/blob/main/.cursor/rules/specification.mdc)
+
 命令：`bun init`。注意，和 Vite 不同，bun 不会问你项目名，而 package.json 的 name 默认为“bun-react-template”，所以需要提前建好文件夹。另外，bun 自动安装依赖的时候连个进度条都没有，就在那卡着，确实很不友好。
 
 给 Cursor 的 Prompt：
@@ -378,6 +380,74 @@ import { SiMarkdown } from "react-icons/si";
 效果：
 
 ![](./README_assets/2-导航栏和页脚.jpg)
+
+## 阉割版的登录系统
+
+我的 Cursor 账号没法发请求了，只能暂时由 deepseek 代劳。我把给 cursor 的项目规范一并粘给了 deepseek，但可惜生成的代码质量仍然不尽如人意。Prompt：
+
+> 代码规范：
+>
+> - 不要出现`for() {if() {}}`，if 后没有代码的情况。总是考虑 early return/continue/break 的写法，减少代码嵌套层级。
+> - Don't Repeat Yourself. 若发现一段代码重复出现 3 次及以上，应抽象出函数。
+>
+> 项目规范：
+>
+> 该项目实现 markdown 文章的渲染、添加、修改等功能。技术栈为 Bun+React19+Tailwind CSS4+marked+react-icons。生成代码时优先考虑使用这些技术。
+>
+> 前端规范
+>
+> - 生成样式时使用 Tailwind CSS
+> - 文件命名使用小驼峰命名法
+> - 用 Bun 作为包管理器
+>
+> React 规范
+>
+> - 遵循 React 最佳实践
+> - 使用 React Hooks
+>
+> 后端规范
+>
+> - api 的请求参数和返回值类型都放在 src/types 下，让前端代码也能引用。
+>
+> 请实现小型登录系统。
+>
+> 后端：
+>
+> 用户信息存在.env 文件，是 JSON 列表，列表元素有 uname 和 pwd 两个字段，pwd 采用 PBKDF2 加密。
+> 登录接口传来 uname 和 pwd 字段，执行 PBKDF2(salt1+pwd+salt2)后和.env 存储的 pwd 字段比较，一致则登录成功。
+>
+> 关于加密算法：使用 PBKDF2，salt1 和 salt2 都从.env 拿。额外使用 salt2 作为 PBKDF2 的盐。比较密码加密后的值是否匹配时，采用 timingSafeEqual。
+>
+> 登录接口的错误处理：若.env 不存在用户信息或未匹配到相同 uname，接口仅返回“用户{uname}不存在”，但控制台输出相应的具体错误信息。若用户信息不存在 uname 或 pwd，返回“登录接口出错”，但控制台输出“用户表格式错误”。若 salt1 或 salt2 未成功读取，返回“登录接口出错”但控制台输出对应的错误信息。
+>
+> 为了方便，编写 addUser.ts 脚本，向.env 文件添加用户信息，这个脚本用 bun 运行，会引用上述的密码字符串加密算法。项目不提供注册功能，唯一的注册方式是在服务器执行上述写入.env 文件的 ts 脚本。
+>
+> 脚本的用户名和密码仅支持从命令行输入。脚本的所有输出都有前缀“[bun-markdown-display]”。
+>
+> 脚本的错误处理：若.env 不存在用户信息，报错并结束。若用户信息不存在 uname 或 pwd，报错并结束。若输入的 uname 已经存在，报错并结束。若 salt1 不存在，报错说“salt1”不存在并结束，salt2 同理。写入.env 失败则报错并结束。
+>
+> 用 jwt 做登录状态保持。前端将其存在 LocalStorage。jwt token 有效期 7 天，但要实现一个 logout 接口，因此需要实现一个基于内存的令牌黑名单机制。为了实现方便，不使用 Redis。
+>
+> 后端技术选型：Bun 内置 API。
+>
+> 前端：
+>
+> 若未登录，导航栏右侧、GitHub 图标左边，添加一个“登录”按钮，点击后跳转到登录页面。若已登录，同样位置显示加粗的用户名，以及“登出”按钮，点击后调用 logout 接口，成功后刷新页面，失败则 toast 报错，不刷新页面。
+>
+> 登录页面的 URL 可输入一个参数，表示登录后要重定向到哪个 URL。
+>
+> 登录表单有用户名、密码两个字段，都是必填，长度均不能超过 30 字符，后端也要加这个参数校验。密码输入框内部右侧展示一个眼睛，点击可显示明文或星号。点击提交按钮，向后端接口发出请求。登录失败展示 toast，登录成功则重定向到目标页面的 URL。
+>
+> 点击提交按钮或点击“登出”按钮，等待接口返回期间，按钮不能点击。
+>
+> 前端技术选型：
+>
+> - 表单管理: React Hook Form
+> - UI 组件: @headlessui/react
+> - Toast 通知: Sonner
+> - 图标: react-icons
+>
+> 请注意，这是一个开源项目，所有代码都是公开的。生成完代码后，请评估该方案的安全风险。
 
 ## 体验感受
 

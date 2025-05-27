@@ -18,5 +18,4 @@ alwaysApply: true
 
 ## 后端规范
 
-
 - api的请求参数和返回值类型都放在 src/types 下，让前端代码也能引用。
