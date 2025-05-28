@@ -6,6 +6,7 @@ import { Layout } from './components/layout/Layout';
 import './index.css';
 import { LoginForm } from './components/LoginForm';
 import { Toaster } from 'sonner';
+import { RegisterForm } from './components/RegisterForm';
 
 export function App() {
   return (
@@ -16,6 +17,7 @@ export function App() {
           <Route path="/" element={<ArticleList />} />
           <Route path="/article/:aid" element={<Article />} />
           <Route path="/login" element={<LoginForm />} />
+          <Route path="/register" element={<RegisterForm />} />
           <Route path="/404" element={<NotFound />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

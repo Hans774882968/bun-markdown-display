@@ -3,8 +3,8 @@ import { jwtVerify, SignJWT } from 'jose';
 // TODO: 改成使用 access token + refresh token 机制来实现登出
 // const tokenBlacklist = new Set<string>();
 
-export const generateToken = (uname: string, secret: Uint8Array<ArrayBufferLike>, expiresIn = '7d') => {
-  return new SignJWT({ uname })
+export const generateToken = (uname: string, isAdmin: boolean, secret: Uint8Array<ArrayBufferLike>, expiresIn = '7d') => {
+  return new SignJWT({ uname, isAdmin })
     .setProtectedHeader({ alg: 'HS256' })
     .setExpirationTime(expiresIn)
     .sign(secret);

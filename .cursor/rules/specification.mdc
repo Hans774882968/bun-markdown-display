@@ -3,13 +3,18 @@ description:
 globs: 
 alwaysApply: true
 ---
-该项目实现markdown文章的渲染、添加、修改等功能。技术栈为Bun+React19+Tailwind CSS4+marked+react-icons。生成代码时优先考虑使用这些技术。
+该项目实现markdown文章的渲染、添加、修改等功能。技术栈为Bun1.2.14+React19+Tailwind CSS4+marked+react-icons+zustand。生成代码时优先考虑使用这些技术。
 
 ## 前端规范
 
 - 生成样式时使用 Tailwind CSS
 - 文件命名使用小驼峰命名法
 - 用 Bun 作为包管理器
+
+项目特有：
+
+- [hansRequest.ts](mdc:src/common/hansRequest.ts) 优先使用该文件发 get / post 请求，返回值类型在 src/types 下
+- [utils.ts](mdc:src/common/utils.ts) Tailwind 类名拼接一律使用 cn 方法
 
 ## React 规范
 
@@ -18,4 +23,11 @@ alwaysApply: true
 
 ## 后端规范
 
-- api的请求参数和返回值类型都放在 src/types 下，让前端代码也能引用。
+- api的请求参数和返回值类型都放在 src/types 下，让前端代码也能引用
+- 接口的返回值类型为 ApiResponse ，确保用 successResponse 和 errorResponse 包裹返回值
+
+项目特有：
+
+- 读取`JWT_SECRET`请使用 [loadFromEnv.ts](mdc:src/backend/utils/loadFromEnv.ts)
+- 仅支持POST请求的接口应使用 [routeAllowOnlyPost.ts](mdc:src/backend/utils/routeAllowOnlyPost.ts) 包裹
+- 要求管理员/登录才能调用的接口，用 [auth.ts](mdc:src/backend/service/auth.ts) 里的方法判定

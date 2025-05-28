@@ -5,13 +5,15 @@ import { FiLogIn, FiLogOut } from 'react-icons/fi';
 import { errorToStr } from '@/common/errorToStr';
 import { useJwtTokenStore } from '@/frontend/stores/useJwtTokenStore';
 import { hansRequest } from '@/common/hansRequest';
+import { FaUserPlus } from 'react-icons/fa';
+import { cn } from '@/common/utils';
 
 export function UserStatus() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { uname, jwtToken, clearJwtTokenAndUname } = useJwtTokenStore();
+  const { uname, isAdmin, jwtToken, clearJwtTokenAndUname } = useJwtTokenStore();
 
   const handleLogout = async () => {
     setIsLoading(true);
@@ -40,10 +42,27 @@ export function UserStatus() {
     navigate(redirectUrl);
   };
 
+  const handleRegisterRedirect = () => {
+    navigate('/register');
+  };
+
   if (uname) {
     return (
-      <div className="flex items-center space-x-4">
-        <span className="font-bold">你好，{uname}</span>
+      <div className="flex items-center space-x-8">
+        <span className="font-bold">
+          你好，<span className={cn(isAdmin && 'text-[#ffd43b]')}>{uname}</span>
+        </span>
+        {
+          isAdmin && (
+            <button
+              onClick={handleRegisterRedirect}
+              className="flex items-center gap-1.5 font-bold cursor-pointer"
+            >
+              <FaUserPlus className="h-5 w-5" />
+              <span>注册</span>
+            </button>
+          )
+        }
         <button
           onClick={handleLogout}
           disabled={isLoading}

@@ -1,10 +1,7 @@
-import { errorResponse } from './utils/apiResponse';
+import { loginRequired } from './service/auth';
 
-export async function handleLogout(req: Request): Promise<Response> {
-  if (req.method !== 'POST') {
-    return Response.json(
-      errorResponse(405, 'Method Not Allowed')
-    );
+export const handleLogout = loginRequired(
+  () => {
+    return Response.json({ code: 114514, msg: '暂未实现', data: null });
   }
-  return Response.json({ code: 114514, msg: '暂未实现', data: null });
-}
+);

@@ -3,6 +3,9 @@ import { handleLogin } from './login';
 import { handleLogout } from './logout';
 import { handleArticle, handleAllArticles } from './articles';
 import index from '@/index.html';
+import { handleRegister } from './register';
+import { handleIsAdmin } from './user/isAdmin';
+import { routeAllowOnlyPost } from './utils/routeAllowOnlyPost';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const PORT = isProduction ? 5202 : 5201;
@@ -14,8 +17,10 @@ const server = serve({
     '/*': index,
     '/api/allArticles': handleAllArticles,
     '/api/article/:aid': handleArticle,
-    '/api/login': handleLogin,
-    '/api/logout': handleLogout,
+    '/api/login': routeAllowOnlyPost(handleLogin),
+    '/api/logout': routeAllowOnlyPost(handleLogout),
+    '/api/register': routeAllowOnlyPost(handleRegister),
+    '/api/user/isAdmin': handleIsAdmin,
   },
   // 开发配置
   development: process.env.NODE_ENV !== 'production' && {

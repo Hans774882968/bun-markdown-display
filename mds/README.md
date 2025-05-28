@@ -353,6 +353,24 @@ main();
 
 执行`bun build:all`即可完成打包。执行`bun run:dist`即可启动后端项目。前端项目和后端接口跑在同一个端口 5202 下。
 
+### 250528更新：做完登录、注册系统后，`bun run:dist`跑不起来了
+
+输出那句`[bun-markdown-display] server is running at port 5202`后，请求首页就报错：
+
+```
+panic(thread 7456): integer part of floating point value out of bounds
+oh no: Bun has crashed. This indicates a bug in Bun, not your code.
+
+To send a redacted crash report to Bun's team,
+please file a GitHub issue using the link below:
+
+error: script "run:dist" exited with code 134
+```
+
+请求后端接口，成功拿到一次响应，然后就报类似的错。
+
+盲猜是Bun的问题，不是我的。累了，不想再战斗了。
+
 ## 为所有页面添加统一的导航栏和页脚
 
 给 Cursor 的 Prompt：
@@ -381,7 +399,7 @@ import { SiMarkdown } from "react-icons/si";
 
 ![](./README_assets/2-导航栏和页脚.jpg)
 
-## 阉割版的登录系统
+## 阉割版的登录、注册系统
 
 我的 Cursor 账号没法发请求了，只能暂时由 deepseek 代劳。我把给 cursor 的项目规范一并粘给了 deepseek，但可惜生成的代码质量仍然不尽如人意。Prompt：
 
@@ -448,6 +466,27 @@ import { SiMarkdown } from "react-icons/si";
 > - 图标: react-icons
 >
 > 请注意，这是一个开源项目，所有代码都是公开的。生成完代码后，请评估该方案的安全风险。
+
+注册系统的 Prompt：
+
+> 请为 interface User 添加属性 isAdmin: boolean, uid: string。addUser.ts 新增命令参数 isAdmin，若不填，默认创建普通用户。
+>
+> uid 用雪花算法生成，请使用 npm 包 flake-idgen，生成 16 进制字符串。
+>
+> 修改密码的加密算法，变为`${salt1},${uid},${password},${salt2}`，这样，即使两个用户密码一样，加密结果也不一样。记得修改对应的测试脚本。
+>
+> 登录表单：请根据 validateLoginInput 更新 LoginForm.tsx 中的表单交互。
+>
+> 实现注册接口。需要有效的 jwtToken，且当前用户是管理员才允许调用。该接口只能创建普通用户。
+>
+> 实现注册页面：
+>
+> - 输入 URL 进入时，如果用户未登录，需要重定向到登录页面。如果用户不是管理员，需要弹出消息框，说只有管理员才能注册用户。然后重定向到首页。
+> - 字段：用户名、密码、密码确认。用户名和密码的校验请调用 validateLoginInput。密码确认下面有一个组件，显示当前输入的密码的强度，调用 getPasswordStrength 函数。
+> - 注册页面的组件样式风格应与 LoginForm.tsx 一致，点击提交按钮等交互也应与 LoginForm.tsx 一致。
+>
+> 生成完所有代码后，请评估现有登录、注册系统的安全性。
+> 额。这个提示词效果不太好。比如`LoginForm.tsx`完全没修改，密码强度组件完全是胡乱实现。
 
 ## 体验感受
 
