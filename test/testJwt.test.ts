@@ -78,7 +78,6 @@ describe('JWT 工具函数', () => {
       expect(resultReal?.payload.isAdmin).toBe(testIsAdmin);
     });
 
-
     test('伪造 payload part1 不改 isAdmin', async () => {
       const token = await generateToken(testUsername, testIsAdmin, secret, testExpiresIn);
       const tokenParts = token.split('.');

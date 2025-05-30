@@ -21,7 +21,7 @@ export const hashPassword = async (
       name: 'PBKDF2',
       salt: encoder.encode(salt2),
       iterations,
-      hash: 'SHA-256'
+      hash: 'SHA-256',
     },
     baseKey,
     256

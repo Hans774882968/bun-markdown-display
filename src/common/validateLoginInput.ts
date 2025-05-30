@@ -8,7 +8,7 @@ export function getPasswordStrength(pwd: string): number {
     { type: 'lowercase', valid: /[a-z]/.test(pwd) },
     { type: 'uppercase', valid: /[A-Z]/.test(pwd) },
     { type: 'number', valid: /[0-9]/.test(pwd) },
-    { type: 'special', valid: pwd.split('').some((c) => SPECIAL_CHAR_SET.has(c)) }
+    { type: 'special', valid: pwd.split('').some((c) => SPECIAL_CHAR_SET.has(c)) },
   ];
   const validCount = checkers.filter(c => c.valid).length;
   return validCount;

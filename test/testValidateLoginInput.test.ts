@@ -3,7 +3,7 @@ import {
   getPasswordStrength,
   validatePasswordComplexity,
   validateLoginInput,
-  SPECIAL_CHARS
+  SPECIAL_CHARS,
 } from '@/common/validateLoginInput';
 
 describe('validateLoginInput', () => {

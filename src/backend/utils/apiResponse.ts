@@ -4,7 +4,7 @@ export function successResponse<T>(data: T): ApiResponseSuccess<T> {
   return {
     code: 0,
     msg: '',
-    data
+    data,
   };
 }
 
@@ -12,7 +12,7 @@ export function errorResponse(code: number, msg: string): ApiResponseError {
   return {
     code,
     msg,
-    data: null
+    data: null,
   };
 }
 

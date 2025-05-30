@@ -33,12 +33,12 @@ export const handleRegister = adminRequired(
         uname,
         pwd: hashedPwd,
         isAdmin: false,
-        uid
+        uid,
       };
 
       const updatedConfig = {
         ...authConfig,
-        users: [...authConfig.users, newUser]
+        users: [...authConfig.users, newUser],
       };
 
       await Bun.write('.env', `AUTH_CONFIG=${JSON.stringify(updatedConfig)}\n`);

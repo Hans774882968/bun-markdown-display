@@ -66,12 +66,12 @@ const main = async () => {
       uname,
       pwd: hashedPwd,
       isAdmin,
-      uid
+      uid,
     };
 
     const updatedConfig = {
       ...authConfig,
-      users: [...authConfig.users, newUser]
+      users: [...authConfig.users, newUser],
     };
 
     await Bun.write('.env', `AUTH_CONFIG=${JSON.stringify(updatedConfig)}\n`);

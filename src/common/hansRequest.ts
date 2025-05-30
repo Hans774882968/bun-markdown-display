@@ -27,7 +27,7 @@ export const hansRequest = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...options.headers
+        ...options.headers,
       },
       ...(body && typeof body === 'object' ? { body: JSON.stringify(body) } : {}),
     }, options);
@@ -65,8 +65,8 @@ export const hansRequest = {
   },
 
   _handleError(error: unknown, options: RequestOptions): void {
-    if (options.silent) return;    
+    if (options.silent) return;
     const context = options.errorCtx || '[hansRequest Error]';
     console.error(context, error);
-  }
+  },
 };

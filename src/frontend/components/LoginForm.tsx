@@ -78,7 +78,7 @@ export function LoginForm() {
           <input
             id="uname"
             {...register('uname', {
-              validate: validateUsername
+              validate: validateUsername,
             })}
             className={cn(
               'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2',
@@ -97,7 +97,7 @@ export function LoginForm() {
               id="pwd"
               type={showPassword ? 'text' : 'password'}
               {...register('pwd', {
-                validate: validatePassword
+                validate: validatePassword,
               })}
               className={cn(
                 'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2',

@@ -1,7 +1,7 @@
 import {
   RouteMethodWithAdminCtx,
   RouteMethodWithLoginCtx,
-  LoginCheckCtx
+  LoginCheckCtx,
 } from '@/types/auth';
 import { errorResponse } from '../utils/apiResponse';
 import { verifyToken } from '../utils/jwt';

@@ -84,7 +84,7 @@ describe('hansRequest', () => {
       expect(call[0]).toBe('https://api.example.com');
       expect(call[1]?.method).toBe('POST');
       expect(call[1]?.headers).toEqual({
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       });
       expect(call[1]?.body).toBe(JSON.stringify({ key: 'value' }));
     });
@@ -95,13 +95,13 @@ describe('hansRequest', () => {
       );
 
       await hansRequest.post('https://api.example.com', null, {
-        headers: { 'X-Custom': 'value' }
+        headers: { 'X-Custom': 'value' },
       });
 
       const headers = mockFetch.mock.calls[0][1]?.headers;
       expect(headers).toEqual({
         'Content-Type': 'application/json',
-        'X-Custom': 'value'
+        'X-Custom': 'value',
       });
     });
   });
@@ -119,7 +119,7 @@ describe('hansRequest', () => {
       mockFetch.mockRejectedValueOnce(new Error('Error'));
 
       await expect(hansRequest.get('https://api.example.com', {
-        errorCtx: '[Custom Context]'
+        errorCtx: '[Custom Context]',
       })).rejects.toThrow();
       
       expect(mockConsoleError).toHaveBeenCalledWith(

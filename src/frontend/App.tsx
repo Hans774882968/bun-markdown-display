@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ArticleList } from './components/ArticleList';
-import { Article } from './components/Article';
+import { Article } from './components/article/Article';
 import { NotFound } from './components/NotFound';
 import { Layout } from './components/layout/Layout';
 import './index.css';

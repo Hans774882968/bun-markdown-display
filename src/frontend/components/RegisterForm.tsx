@@ -28,7 +28,7 @@ export function RegisterForm() {
     register,
     handleSubmit,
     watch,
-    formState: { errors }
+    formState: { errors },
   } = useForm<RegisterFormData>();
 
   const pwd = watch('pwd');
@@ -50,7 +50,7 @@ export function RegisterForm() {
     const checkAdmin = async () => {
       try {
         const response = await hansRequest.get<IsAdminResponse>('/api/user/isAdmin', {
-          headers: { 'Authorization': `Bearer ${jwtToken}` }
+          headers: { 'Authorization': `Bearer ${jwtToken}` },
         });
         if (!response.isAdmin) {
           toast.error('只有管理员才能注册用户');
@@ -81,9 +81,9 @@ export function RegisterForm() {
     try {
       await hansRequest.post('/api/register', {
         uname: data.uname,
-        pwd: data.pwd
+        pwd: data.pwd,
       }, {
-        headers: { 'Authorization': `Bearer ${jwtToken}` }
+        headers: { 'Authorization': `Bearer ${jwtToken}` },
       });
       toast.success('注册成功');
       navigate('/');
@@ -122,7 +122,7 @@ export function RegisterForm() {
             id="uname"
             {...register('uname', {
               required: '用户名不能为空',
-              maxLength: { value: 30, message: '不能超过30个字符' }
+              maxLength: { value: 30, message: '不能超过30个字符' },
             })}
             className={cn(
               'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2',
@@ -153,7 +153,7 @@ export function RegisterForm() {
               type={showPassword ? 'text' : 'password'}
               {...register('pwd', {
                 required: '密码不能为空',
-                maxLength: { value: 30, message: '不能超过30个字符' }
+                maxLength: { value: 30, message: '不能超过30个字符' },
               })}
               className={cn(
                 'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2',
@@ -196,7 +196,7 @@ export function RegisterForm() {
               type={showConfirmPassword ? 'text' : 'password'}
               {...register('confirmPwd', {
                 required: '请确认密码',
-                validate: value => value === pwd || '两次输入的密码不一致'
+                validate: value => value === pwd || '两次输入的密码不一致',
               })}
               className={cn(
                 'w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2',

@@ -12,7 +12,7 @@ function generateUniqueId(text: string) {
   }
   usedIds.add(id);
   return id;
-};
+}
 
 // 配置 marked 使用 marked-highlight 和 highlight.js
 marked.use(
@@ -22,7 +22,7 @@ marked.use(
     highlight(code, lang, _info) {
       const language = hljs.getLanguage(lang) ? lang : 'plaintext';
       return hljs.highlight(code, { language }).value;
-    }
+    },
   })
 );
 
@@ -33,14 +33,14 @@ const wrapMermaidDivRenderer: RendererObject = {
       return `<div class="mermaid">${text}</div>`;
     }
     return false; // use default rendering
-  }
+  },
 };
 
 const addIdToHeadingRenderer: RendererObject = {
   heading({ text, depth }) {
     const id = generateUniqueId(text);
     return `<h${depth} id="${id}">${text}</h${depth}>\n`;
-  }
+  },
 };
 
 marked.use({ renderer: wrapMermaidDivRenderer });

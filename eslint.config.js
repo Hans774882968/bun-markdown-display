@@ -40,6 +40,18 @@ export default tseslint.config(
       semi: ['error', 'always'],
       'space-infix-ops': ['error', { int32Hint: false }],
       'comma-spacing': ['error', { before: false, after: true }],
+      'comma-dangle': ['error', {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "never"
+      }],
+      'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
+      'no-trailing-spaces': ['error', { skipBlankLines: true }],
+      'no-multi-spaces': ['error', { ignoreEOLComments: true }],
+      'no-extra-semi': 'error',
+      'no-extra-boolean-cast': 'error',
     },
   },
 )
