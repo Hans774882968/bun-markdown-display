@@ -34,6 +34,8 @@
     "marked": "^15.0.12",
     "marked-highlight": "^2.2.1",
     "mermaid": "^11.6.0",
+    "pixi-live2d-display": "^0.4.0",
+    "pixi.js": "6",
     "react": "^19",
     "react-dom": "^19",
     "react-hook-form": "^7.56.4",

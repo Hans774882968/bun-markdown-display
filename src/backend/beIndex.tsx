@@ -6,7 +6,7 @@ import index from '@/index.html';
 import { handleRegister } from './register';
 import { handleIsAdmin } from './user/isAdmin';
 import { routeAllowOnlyPost } from './utils/routeAllowOnlyPost';
-
+import { handleLive2d } from './handleLive2d';
 const isProduction = process.env.NODE_ENV === 'production';
 const PORT = isProduction ? 5202 : 5201;
 
@@ -21,6 +21,7 @@ const server = serve({
     '/api/logout': routeAllowOnlyPost(handleLogout),
     '/api/register': routeAllowOnlyPost(handleRegister),
     '/api/user/isAdmin': handleIsAdmin,
+    '/live2d/*': handleLive2d,
   },
   // 开发配置
   development: process.env.NODE_ENV !== 'production' && {

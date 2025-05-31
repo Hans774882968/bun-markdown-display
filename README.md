@@ -353,7 +353,7 @@ main();
 
 执行`bun build:all`即可完成打包。执行`bun run:dist`即可启动后端项目。前端项目和后端接口跑在同一个端口 5202 下。
 
-### 250528更新：做完登录、注册系统后，`bun run:dist`跑不起来了
+### 250528 更新：做完登录、注册系统后，`bun run:dist`跑不起来了
 
 输出那句`[bun-markdown-display] server is running at port 5202`后，请求首页就报错：
 
@@ -369,7 +369,7 @@ error: script "run:dist" exited with code 134
 
 请求后端接口，成功拿到一次响应，然后就报类似的错。
 
-盲猜是Bun的问题，不是我的。累了，不想再战斗了。
+盲猜是 Bun 的问题，不是我的。累了，不想再战斗了。
 
 ## 为所有页面添加统一的导航栏和页脚
 
@@ -487,6 +487,101 @@ import { SiMarkdown } from "react-icons/si";
 >
 > 生成完所有代码后，请评估现有登录、注册系统的安全性。
 > 额。这个提示词效果不太好。比如`LoginForm.tsx`完全没修改，密码强度组件完全是胡乱实现。
+
+## 用 pixi-live2d-display 和 pixi.js 6 实现最基础的看板娘
+
+根据[参考链接 3](https://zhuanlan.zhihu.com/p/638474467)，可以用 pixi-live2d-display 0.4.0 和 pixi.js 6（文章说到，pixi-live2d-display 0.4.0 只支持 pixi.js 6）实现一个最基础的看板娘。
+
+```powershell
+bun add pixi-live2d-display pixi.js@6
+```
+
+看板娘是画在 canvas 上的，因此需要给页面添加一个 canvas 元素，而看参考链接 3，包需要我们传入 dom 元素，所以这里需要一个 ref 。为了把那坨代码从我干净整洁的`src\frontend\components\layout\Layout.tsx`的隔离开，不妨封装一个自定义 hook。`src\frontend\hooks\useLive2dHook.ts`：
+
+```ts
+import * as PIXI from "pixi.js";
+import { InternalModel, Live2DModel } from "pixi-live2d-display/cubism4";
+import { useEffect, useRef } from "react";
+
+// copy from https://codepen.io/guansss/pen/KKgXBOP/left?editors=0010
+function draggable(model: Live2DModel<InternalModel>) {
+  model.buttonMode = true;
+  model.on("pointerdown", (e) => {
+    model.dragging = true;
+    model._pointerX = e.data.global.x - model.x;
+    model._pointerY = e.data.global.y - model.y;
+  });
+  model.on("pointermove", (e) => {
+    if (model.dragging) {
+      model.position.x = e.data.global.x - model._pointerX;
+      model.position.y = e.data.global.y - model._pointerY;
+    }
+  });
+  model.on("pointerupoutside", () => (model.dragging = false));
+  model.on("pointerup", () => (model.dragging = false));
+}
+
+function addHitInteraction(model: Live2DModel<InternalModel>) {
+  model.on("hit", (hitAreas) => {
+    if (hitAreas.includes("Body")) {
+      model.motion("TapBody");
+    }
+
+    if (hitAreas.includes("Head")) {
+      model.expression();
+    }
+  });
+}
+
+window.PIXI = PIXI; // 这一行是必须的，否则，虽然页面不报错，但是看板娘不会动
+
+export default function useLive2dHook() {
+  const live2dCanvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const init = async () => {
+      const app = new PIXI.Application({
+        view: live2dCanvasRef.current || undefined,
+        autoStart: true,
+        // 响应式设计
+        resizeTo: window,
+        backgroundAlpha: 0,
+      });
+      // 引入live2d模型文件
+      const modelJsonPathList = [
+        "/live2d/Haru/Haru.model3.json",
+        "/live2d/Hiyori/Hiyori.model3.json",
+        "/live2d/Mao/Mao.model3.json",
+        "/live2d/Rice/Rice.model3.json",
+        "/live2d/Wanko/Wanko.model3.json",
+      ];
+      const modelJsonPath =
+        modelJsonPathList[Math.floor(Math.random() * modelJsonPathList.length)];
+      const model = await Live2DModel.from(modelJsonPath, {
+        autoInteract: true, // 关闭眼睛自动跟随功能
+      });
+
+      // 调整live2d模型文件缩放比例（文件过大，需要缩小）
+      const scaleX = (innerWidth * 0.4) / model.width;
+      const scaleY = (innerHeight * 0.8) / model.height;
+      model.scale.set(Math.min(scaleX, scaleY));
+
+      model.x = 0;
+      model.y = innerHeight * 0.1;
+
+      draggable(model);
+      addHitInteraction(model);
+
+      app.stage.addChild(model);
+    };
+    init();
+  }, []);
+
+  return {
+    live2dCanvasRef,
+  };
+}
+```
 
 ## 体验感受
 
