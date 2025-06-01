@@ -34,20 +34,23 @@ function addHitInteraction(model: Live2DModel<InternalModel>) {
 
 window.PIXI = PIXI; // 这一行是必须的，否则，虽然页面不报错，但是看板娘不会动
 
+// 不支持在两个组件中调用，否则会报警告，占用的 WebGL contexts 太多
 export default function useLive2dHook() {
   const live2dCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    const app = new PIXI.Application({
+      view: live2dCanvasRef.current || undefined,
+      autoStart: true,
+      width: 340, // canvas 会挡住页面其他元素，不能太宽
+      height: 700,
+      // 响应式设计先不要了，因为 canvas 会挡住页面其他元素
+      // resizeTo: live2dCanvasRef.current || undefined,
+      backgroundAlpha: 0,
+    });
+
     const init = async () => {
-      const app = new PIXI.Application({
-        view: live2dCanvasRef.current || undefined,
-        autoStart: true,
-        width: 340, // canvas 会挡住页面其他元素，不能太宽
-        height: 700,
-        // 响应式设计先不要了，因为 canvas 会挡住页面其他元素
-        // resizeTo: live2dCanvasRef.current || undefined,
-        backgroundAlpha: 0,
-      });
+
       // 引入live2d模型文件
       const modelJsonPathList = [
         '/live2d/Haru/Haru.model3.json',
@@ -82,7 +85,13 @@ export default function useLive2dHook() {
 
       app.stage.addChild(model);
     };
+
     init();
+
+    return () => {
+      app.destroy();
+      live2dCanvasRef.current = null;
+    };
   }, []);
 
   return {

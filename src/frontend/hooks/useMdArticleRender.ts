@@ -59,7 +59,6 @@ export default function useMdArticleRender(content: string) {
     processMarkdown();
   }, [content]);
 
-  // TODO: 错误处理
   // Render mermaid diagrams after content loads
   useEffect(() => {
     if (!articleRef.current || !htmlContent) {
@@ -67,14 +66,14 @@ export default function useMdArticleRender(content: string) {
     }
     const mermaidElements = articleRef.current.querySelectorAll<HTMLElement>('.mermaid');
     if (mermaidElements.length > 0) {
-      try {
-        mermaid.run({
+      mermaid
+        .run({
           nodes: mermaidElements,
+        })
+        .catch((error) => {
+          console.error('Mermaid rendering error:', error);
+          toast.error(errorToStr(error));
         });
-      } catch (error) {
-        console.error('Mermaid rendering error:', error);
-        toast.error(errorToStr(error));
-      }
     }
   }, [htmlContent]);
 

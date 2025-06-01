@@ -2,15 +2,13 @@ import { ReactNode } from 'react';
 import { FaGithub } from 'react-icons/fa';
 import './Layout.css';
 import Navbar from './Navbar';
-import useLive2dHook from '@/frontend/hooks/useLive2dHook';
+import '@/frontend/live2d-widget/autoload';
 
 interface LayoutProps {
   children: ReactNode;
 }
 
 export function Layout({ children }: LayoutProps) {
-  const { live2dCanvasRef } = useLive2dHook();
-
   // TODO: footer 暂时不拆，为 MutationObserver 做准备
   const currentYear = new Date().getFullYear();
 
@@ -35,7 +33,6 @@ export function Layout({ children }: LayoutProps) {
           </p>
         </div>
       </footer>
-      <canvas ref={live2dCanvasRef} style={{ position: 'fixed' }} />
     </div>
   );
 }

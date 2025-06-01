@@ -30,6 +30,11 @@ export default function Navbar() {
           </Link>
           {getBreadcrumb()}
         </div>
+        <div className="nav-middle">
+          <Link to="/pixi-live2d-display-for-test" className="nav-brand">
+            <strong>Live2d测试页</strong>
+          </Link>
+        </div>
         <div className="nav-right">
           <UserStatus />
           <a

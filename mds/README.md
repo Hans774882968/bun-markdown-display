@@ -133,7 +133,6 @@ useEffect(() => {
   });
 }, []);
 
-// TODO: 错误处理
 // Render mermaid diagrams after content loads
 useEffect(() => {
   if (!articleRef.current || !htmlContent) {
@@ -142,13 +141,14 @@ useEffect(() => {
   const mermaidElements =
     articleRef.current.querySelectorAll<HTMLElement>(".mermaid");
   if (mermaidElements.length > 0) {
-    try {
-      mermaid.run({
+    mermaid
+      .run({
         nodes: mermaidElements,
+      })
+      .catch((error) => {
+        console.error("Mermaid rendering error:", error);
+        toast.error(errorToStr(error));
       });
-    } catch (error) {
-      console.error("Mermaid rendering error:", error);
-    }
   }
 }, [htmlContent]);
 ```
@@ -535,18 +535,22 @@ function addHitInteraction(model: Live2DModel<InternalModel>) {
 
 window.PIXI = PIXI; // 这一行是必须的，否则，虽然页面不报错，但是看板娘不会动
 
+// 不支持在两个组件中调用，否则会报警告，占用的 WebGL contexts 太多
 export default function useLive2dHook() {
   const live2dCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    const app = new PIXI.Application({
+      view: live2dCanvasRef.current || undefined,
+      autoStart: true,
+      width: 340, // canvas 会挡住页面其他元素，不能太宽
+      height: 700,
+      // 响应式设计先不要了，因为 canvas 会挡住页面其他元素
+      // resizeTo: live2dCanvasRef.current || undefined,
+      backgroundAlpha: 0,
+    });
+
     const init = async () => {
-      const app = new PIXI.Application({
-        view: live2dCanvasRef.current || undefined,
-        autoStart: true,
-        // 响应式设计
-        resizeTo: window,
-        backgroundAlpha: 0,
-      });
       // 引入live2d模型文件
       const modelJsonPathList = [
         "/live2d/Haru/Haru.model3.json",
@@ -558,7 +562,7 @@ export default function useLive2dHook() {
       const modelJsonPath =
         modelJsonPathList[Math.floor(Math.random() * modelJsonPathList.length)];
       const model = await Live2DModel.from(modelJsonPath, {
-        autoInteract: true, // 关闭眼睛自动跟随功能
+        autoInteract: true, // 眼睛自动跟随功能
       });
 
       // 调整live2d模型文件缩放比例（文件过大，需要缩小）
@@ -566,7 +570,15 @@ export default function useLive2dHook() {
       const scaleY = (innerHeight * 0.8) / model.height;
       model.scale.set(Math.min(scaleX, scaleY));
 
-      model.x = 0;
+      const modelXMap: Record<string, number> = {
+        "/live2d/Haru/Haru.model3.json": 0,
+        "/live2d/Hiyori/Hiyori.model3.json": 0,
+        "/live2d/Mao/Mao.model3.json": 0,
+        "/live2d/Rice/Rice.model3.json": -200,
+        "/live2d/Wanko/Wanko.model3.json": -100,
+      };
+
+      model.x = modelXMap[modelJsonPath] || 0;
       model.y = innerHeight * 0.1;
 
       draggable(model);
@@ -574,13 +586,27 @@ export default function useLive2dHook() {
 
       app.stage.addChild(model);
     };
+
     init();
+
+    return () => {
+      app.destroy();
+      live2dCanvasRef.current = null;
+    };
   }, []);
 
   return {
     live2dCanvasRef,
   };
 }
+```
+
+记得在组件卸载时调用`app.destroy();`，否则会有警告：`WebGL: INVALID_OPERATION: bindTexture: object does not belong to this context`。查[参考链接 3](https://www.jianshu.com/p/5d1a06a49c0a)可知，我们需要释放掉 WebGL context ，单个页面同时激活的 WebGL contexts 才不会超过 16 个，才能避免警告。下面的代码来自[参考链接 4](https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_lose_context)，演示了如何通过监听 webglcontextlost 验证`app.destroy();`的确销毁了 WebGL context ：
+
+```typescript
+live2dCanvasRef.current?.addEventListener("webglcontextlost", (event) => {
+  console.log(event);
+});
 ```
 
 ## 体验感受
@@ -601,3 +627,5 @@ please file a GitHub issue using the link below:
 
 1. 看看别人怎么做静态资源解析的：https://github.com/danawoodman/bun-htmx/blob/main/src/response.tsx
 2. https://juejin.cn/post/7273743139977183232
+3. https://www.jianshu.com/p/5d1a06a49c0a
+4. https://developer.mozilla.org/en-US/docs/Web/API/WEBGL_lose_context

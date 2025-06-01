@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "dev": "bun --hot src/backend/beIndex.tsx",
     "start": "NODE_ENV=production bun src/backend/beIndex.tsx",
+    "updateMds": "cp README.md mds/README.md && cp 其他笔记.md mds/bun-react-tailwind-template.md",
     "build:all": "bun build:fe && bun build:be",
     "build:fe": "bun run build.ts",
     "build:be": "bun build:be1 && bun build:be2",

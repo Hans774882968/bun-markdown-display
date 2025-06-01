@@ -202,3 +202,68 @@ describe("handleLogin", () => {
   });
 });
 ```
+
+## live2d 模型接入 bug
+
+攻略：对于 Version 2 的模型，手动创建`textures.cache`即可。`nepnep`加载时说加载不到`general/pose.json`，就手动复制过来。
+
+这三个模型加载正常：
+
+```json
+    "KantaiCollection/murakumo",
+    "Potion-Maker/Pio",
+    "Potion-Maker/Tia"
+```
+
+这些模型加载不出衣服，控制台报错`WebGL: INVALID_OPERATION: texParameter: no texture bound to target`：
+
+```json
+    "HyperdimensionNeptunia/nepnep",
+    "HyperdimensionNeptunia/neptune_santa",
+    "HyperdimensionNeptunia/noir_santa",
+```
+
+250601 22:35 更新：改成用`waifu-tips.json`加载，又好了！实在让人摸不着头脑。
+
+## waifu-tips.json 模型信息备份
+
+```json
+  "models": [{
+    "name": "Potion-Maker/Pio",
+    "paths": ["https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/model/Potion-Maker/Pio/index.json"],
+    "message": "来自 Potion Maker 的 Pio 酱 ~"
+  }, {
+    "name": "Potion-Maker/Tia",
+    "paths": ["https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/model/Potion-Maker/Tia/index.json"],
+    "message": "来自 Potion Maker 的 Tia 酱 ~"
+  }, {
+    "name": "HyperdimensionNeptunia",
+    "paths": [
+      "https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/model/HyperdimensionNeptunia/neptune_classic/index.json",
+      "https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/model/HyperdimensionNeptunia/nepnep/index.json",
+      "https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/model/HyperdimensionNeptunia/neptune_santa/index.json",
+      "https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/model/HyperdimensionNeptunia/nepmaid/index.json",
+      "https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/model/HyperdimensionNeptunia/nepswim/index.json",
+      "https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/model/HyperdimensionNeptunia/noir_classic/index.json",
+      "https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/model/HyperdimensionNeptunia/noir/index.json",
+      "https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/model/HyperdimensionNeptunia/noir_santa/index.json",
+      "https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/model/HyperdimensionNeptunia/noireswim/index.json",
+      "https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/model/HyperdimensionNeptunia/blanc_classic/index.json",
+      "https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/model/HyperdimensionNeptunia/blanc_normal/index.json",
+      "https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/model/HyperdimensionNeptunia/blanc_swimwear/index.json",
+      "https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/model/HyperdimensionNeptunia/vert_classic/index.json",
+      "https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/model/HyperdimensionNeptunia/vert_normal/index.json",
+      "https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/model/HyperdimensionNeptunia/vert_swimwear/index.json",
+      "https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/model/HyperdimensionNeptunia/nepgear/index.json",
+      "https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/model/HyperdimensionNeptunia/nepgear_extra/index.json",
+      "https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/model/HyperdimensionNeptunia/nepgearswim/index.json",
+      "https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/model/HyperdimensionNeptunia/histoire/index.json",
+      "https://fastly.jsdelivr.net/gh/fghrsh/live2d_api/model/HyperdimensionNeptunia/histoirenohover"
+    ],
+    "message": "Nep! Nep! 超次元游戏：海王星 系列"
+  }, {
+    "name": "Hiyori",
+    "paths": ["https://fastly.jsdelivr.net/gh/Live2D/CubismWebSamples/Samples/Resources/Hiyori/Hiyori.model3.json"],
+    "message": "是 Hiyori 哦 ~"
+  }]
+```
