@@ -6,6 +6,7 @@ import { ApiResponse } from '@/types/api';
 import './toc.css';
 import { toast } from 'sonner';
 import useMdArticleRender from '@/frontend/hooks/useMdArticleRender';
+import { Helmet } from 'react-helmet-async';
 
 export function Article() {
   const { aid } = useParams<{ aid: string }>();
@@ -74,13 +75,18 @@ export function Article() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-4xl font-[800] mb-8">{article.title}</h1>
-      <article
-        ref={articleRef}
-        className="prose dark:prose-invert max-w-none"
-        dangerouslySetInnerHTML={{ __html: htmlContent }}
-      />
-    </div>
+    <>
+      <Helmet>
+        <title>{article.title}</title>
+      </Helmet>
+      <div className="max-w-3xl mx-auto p-6">
+        <h1 className="text-4xl font-[800] mb-8">{article.title}</h1>
+        <article
+          ref={articleRef}
+          className="prose dark:prose-invert max-w-none"
+          dangerouslySetInnerHTML={{ __html: htmlContent }}
+        />
+      </div>
+    </>
   );
 }

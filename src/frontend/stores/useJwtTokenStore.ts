@@ -1,11 +1,13 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { UserPublicFieldsStore } from '@/types/auth';
 
-interface JwtTokenState extends UserPublicFieldsStore {
+interface JwtTokenState {
+  uname: string | null
+  isAdmin: boolean | null
   jwtToken: string | null;
-  setJwtTokenAndUname: (token: string) => void;
-  clearJwtTokenAndUname: () => void;
+  // eslint-disable-next-line no-unused-vars
+  setJwtTokenState: (token: string) => void;
+  clearJwtTokenState: () => void;
 }
 
 export const useJwtTokenStore = create<JwtTokenState>()(
@@ -14,7 +16,7 @@ export const useJwtTokenStore = create<JwtTokenState>()(
       jwtToken: '',
       uname: '',
       isAdmin: false,
-      setJwtTokenAndUname: (token) => {
+      setJwtTokenState: (token) => {
         if (!token) {
           set({ jwtToken: null, uname: null, isAdmin: null });
           return;
@@ -31,7 +33,7 @@ export const useJwtTokenStore = create<JwtTokenState>()(
           set({ jwtToken: null, uname: null, isAdmin: null });
         }
       },
-      clearJwtTokenAndUname: () => set({ jwtToken: null, uname: null, isAdmin: null }),
+      clearJwtTokenState: () => set({ jwtToken: null, uname: null, isAdmin: null }),
     }),
     {
       name: 'JWT_TOKEN',

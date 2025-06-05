@@ -373,7 +373,6 @@ class L2DExpressionMotion extends AMotion {
     model /*ALive2DModel*/,
     timeMSec /*long*/,
     weight /*float*/,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     motionQueueEnt /*MotionQueueEnt*/,
   ) {
     for (let i = this.paramList.length - 1; i >= 0; --i) {
@@ -472,45 +471,45 @@ class L2DEyeBlink {
     let eyeParamValue /*:Number*/;
     let t /*:Number*/ = 0;
     switch (this.eyeState) {
-    case EYE_STATE.STATE_CLOSING:
-      t = (time - this.stateStartTime) / this.closingMotionMsec;
-      if (t >= 1) {
-        t = 1;
-        this.eyeState = EYE_STATE.STATE_CLOSED;
-        this.stateStartTime = time;
-      }
-      eyeParamValue = 1 - t;
-      break;
-    case EYE_STATE.STATE_CLOSED:
-      t = (time - this.stateStartTime) / this.closedMotionMsec;
-      if (t >= 1) {
-        this.eyeState = EYE_STATE.STATE_OPENING;
-        this.stateStartTime = time;
-      }
-      eyeParamValue = 0;
-      break;
-    case EYE_STATE.STATE_OPENING:
-      t = (time - this.stateStartTime) / this.openingMotionMsec;
-      if (t >= 1) {
-        t = 1;
+      case EYE_STATE.STATE_CLOSING:
+        t = (time - this.stateStartTime) / this.closingMotionMsec;
+        if (t >= 1) {
+          t = 1;
+          this.eyeState = EYE_STATE.STATE_CLOSED;
+          this.stateStartTime = time;
+        }
+        eyeParamValue = 1 - t;
+        break;
+      case EYE_STATE.STATE_CLOSED:
+        t = (time - this.stateStartTime) / this.closedMotionMsec;
+        if (t >= 1) {
+          this.eyeState = EYE_STATE.STATE_OPENING;
+          this.stateStartTime = time;
+        }
+        eyeParamValue = 0;
+        break;
+      case EYE_STATE.STATE_OPENING:
+        t = (time - this.stateStartTime) / this.openingMotionMsec;
+        if (t >= 1) {
+          t = 1;
+          this.eyeState = EYE_STATE.STATE_INTERVAL;
+          this.nextBlinkTime = this.calcNextBlink();
+        }
+        eyeParamValue = t;
+        break;
+      case EYE_STATE.STATE_INTERVAL:
+        if (this.nextBlinkTime < time) {
+          this.eyeState = EYE_STATE.STATE_CLOSING;
+          this.stateStartTime = time;
+        }
+        eyeParamValue = 1;
+        break;
+      case EYE_STATE.STATE_FIRST:
+      default:
         this.eyeState = EYE_STATE.STATE_INTERVAL;
         this.nextBlinkTime = this.calcNextBlink();
-      }
-      eyeParamValue = t;
-      break;
-    case EYE_STATE.STATE_INTERVAL:
-      if (this.nextBlinkTime < time) {
-        this.eyeState = EYE_STATE.STATE_CLOSING;
-        this.stateStartTime = time;
-      }
-      eyeParamValue = 1;
-      break;
-    case EYE_STATE.STATE_FIRST:
-    default:
-      this.eyeState = EYE_STATE.STATE_INTERVAL;
-      this.nextBlinkTime = this.calcNextBlink();
-      eyeParamValue = 1;
-      break;
+        eyeParamValue = 1;
+        break;
     }
     if (!this.closeIfZero) eyeParamValue = -eyeParamValue;
     model.setParamFloat(this.eyeID_L, eyeParamValue);

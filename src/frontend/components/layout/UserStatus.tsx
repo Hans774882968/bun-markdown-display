@@ -13,7 +13,7 @@ export function UserStatus() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { uname, isAdmin, jwtToken, clearJwtTokenAndUname } = useJwtTokenStore();
+  const { uname, isAdmin, jwtToken, clearJwtTokenState } = useJwtTokenStore();
 
   const handleLogout = async () => {
     setIsLoading(true);
@@ -22,7 +22,7 @@ export function UserStatus() {
       headers: { 'Authorization': `Bearer ${jwtToken}` },
     })
       .then(() => {
-        clearJwtTokenAndUname();
+        clearJwtTokenState();
         toast.success('退出成功');
       })
       .catch((error) => {

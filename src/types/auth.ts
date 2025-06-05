@@ -5,10 +5,12 @@ export interface User {
   pwd: string;
   isAdmin: boolean;
   uid: string;
+  personalizedSign: string;
 }
 
+// 普通登录用户不能看到 uid ，管理员才可以
 export type UserPublicFields = Omit<User, 'pwd' | 'uid'>;
-export type UserPublicFieldsStore = { [key in keyof UserPublicFields]: UserPublicFields[key] | null };
+export type UserListRow = Omit<User, 'pwd'>;
 
 export interface AuthConfig {
   users: User[];
@@ -27,6 +29,10 @@ export interface LogoutResponse {
 
 export interface IsAdminResponse {
   isAdmin: boolean;
+}
+
+export interface IsLoginResponse {
+  isLogin: boolean;
 }
 
 export interface RegisterResponse {

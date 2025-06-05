@@ -21,7 +21,7 @@ export function LoginForm() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const { setJwtTokenAndUname } = useJwtTokenStore();
+  const { setJwtTokenState } = useJwtTokenStore();
 
   const {
     register,
@@ -40,7 +40,7 @@ export function LoginForm() {
     setIsSubmitting(true);
     hansRequest.post<LoginResponse>('/api/login', data)
       .then((res) => {
-        setJwtTokenAndUname(res.token);
+        setJwtTokenState(res.token);
         toast.success('登录成功');
         navigate(searchParams.get('redirect') || '/');
       })

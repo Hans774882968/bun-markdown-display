@@ -22,7 +22,6 @@ class LAppModel extends L2DBaseModel {
 
   loadJSON(callback) {
     const path = this.modelHomeDir + this.modelSetting.getModelFile();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.loadModelData(path, model => {
       for (let i = 0; i < this.modelSetting.getTextureNum(); i++) {
         const texPaths =
@@ -355,7 +354,6 @@ class LAppModel extends L2DBaseModel {
     this.expressionManager.startMotion(motion, false);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   draw(gl) {
     //logger.trace("--> LAppModel.draw()");
 

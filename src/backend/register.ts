@@ -34,6 +34,7 @@ export const handleRegister = adminRequired(
         pwd: hashedPwd,
         isAdmin: false,
         uid,
+        personalizedSign: '',
       };
 
       const updatedConfig = {

@@ -7,6 +7,9 @@ import { handleRegister } from './register';
 import { handleIsAdmin } from './user/isAdmin';
 import { routeAllowOnlyPost } from './utils/routeAllowOnlyPost';
 import { handleLive2d } from './handleLive2d';
+import { userAll } from './user/allUsers';
+import { handleIsLogin } from './user/isLogin';
+
 const isProduction = process.env.NODE_ENV === 'production';
 const PORT = isProduction ? 5202 : 5201;
 
@@ -21,6 +24,8 @@ const server = serve({
     '/api/logout': routeAllowOnlyPost(handleLogout),
     '/api/register': routeAllowOnlyPost(handleRegister),
     '/api/user/isAdmin': handleIsAdmin,
+    '/api/user/isLogin': handleIsLogin,
+    '/api/user/all': userAll,
     '/live2d/*': handleLive2d,
   },
   // 开发配置

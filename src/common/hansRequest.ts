@@ -8,6 +8,35 @@ type RequestOptions = {
 }
 
 export const hansRequest = {
+  async getWithAuthorization<T = unknown>(
+    url: string,
+    jwtToken: string,
+    options: RequestOptions = {}
+  ) {
+    return this.get<T>(url, {
+      ...options,
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+        ...options.headers,
+      },
+    });
+  },
+
+  async postWithAuthorization<T = unknown>(
+    url: string,
+    body: unknown,
+    jwtToken: string,
+    options: RequestOptions = {}
+  ) {
+    return this.post<T>(url, body, {
+      ...options,
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+        ...options.headers,
+      },
+    });
+  },
+
   async get<T = unknown>(
     url: string,
     options: RequestOptions = {}
@@ -59,14 +88,14 @@ export const hansRequest = {
       const json = await response.json();
       return json;
     } catch (error) {
-      this._handleError(error, options);
+      this._handleError(error, url, options);
       throw error;
     }
   },
 
-  _handleError(error: unknown, options: RequestOptions): void {
+  _handleError(error: unknown, url: string, options: RequestOptions): void {
     if (options.silent) return;
-    const context = options.errorCtx || '[hansRequest Error]';
+    const context = options.errorCtx || `[hansRequest Error at ${url}]`;
     console.error(context, error);
   },
 };

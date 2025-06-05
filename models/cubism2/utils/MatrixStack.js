@@ -18,7 +18,6 @@ class MatrixStack {
   }
 
   static push() {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const offset = this.depth * 16;
     const nextOffset = (this.depth + 1) * 16;
 

@@ -5,6 +5,8 @@ alwaysApply: true
 ---
 该项目实现markdown文章的渲染、添加、修改等功能。技术栈为Bun1.2.14+React19+Tailwind CSS4+marked+react-icons+zustand。生成代码时优先考虑使用这些技术。
 
+生成的文档请放在mds文件夹下
+
 ## 前端规范
 
 - 生成样式时使用 Tailwind CSS

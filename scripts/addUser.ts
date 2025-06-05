@@ -67,6 +67,7 @@ const main = async () => {
       pwd: hashedPwd,
       isAdmin,
       uid,
+      personalizedSign: '',
     };
 
     const updatedConfig = {
