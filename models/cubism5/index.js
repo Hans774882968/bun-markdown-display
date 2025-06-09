@@ -1,10 +1,10 @@
 /* global document, window */
 
-import { LAppDelegate } from '@demo/lappdelegate.js';
-import { LAppSubdelegate } from '@demo/lappsubdelegate.js';
-import * as LAppDefine from '@demo/lappdefine.js';
-import { LAppModel } from '@demo/lappmodel.js';
-import { LAppPal } from '@demo/lapppal';
+import { LAppDelegate } from './demo/lappdelegate.js';
+import { LAppSubdelegate } from './demo/lappsubdelegate.js';
+import * as LAppDefine from './demo/lappdefine.js';
+import { LAppModel } from './demo/lappmodel.js';
+import { LAppPal } from './demo/lapppal';
 import logger from '../logger.js';
 
 // Custom subdelegate class, responsible for Canvas-related initialization and rendering management
@@ -46,13 +46,13 @@ class AppSubdelegate extends LAppSubdelegate {
     // Initialize the view (AppView)
     this._view.initialize(this);
     this._view._gear = {
-      render: () => {},
-      isHit: () => {},
-      release: () => {}
+      render: () => { },
+      isHit: () => { },
+      release: () => { }
     };
     this._view._back = {
-      render: () => {},
-      release: () => {}
+      render: () => { },
+      release: () => { }
     };
     // this._view.initializeSprite();
 

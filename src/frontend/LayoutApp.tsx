@@ -10,6 +10,7 @@ import PixiLive2dDisplay from './components/PixiLive2dDisplay';
 import UserManagement from './components/UserManagement';
 import useRouteChange from './utils/useRouteChange';
 import { useJwtTokenStore } from './stores/useJwtTokenStore';
+import OhMyLive2D from './components/OhMyLive2D';
 
 export default function LayoutApp() {
   const location = useLocation();
@@ -25,6 +26,7 @@ export default function LayoutApp() {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/pixi-live2d-display-for-test" element={<PixiLive2dDisplay />} />
+        <Route path="/oh-my-live2d-for-test" element={<OhMyLive2D />} />
         <Route path="/user-management" element={<UserManagement />} />
         <Route path="/404" element={<NotFound />} />
         <Route path="*" element={<NotFound />} />

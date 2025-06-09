@@ -290,8 +290,16 @@
     ],
     "message": "Nep! Nep! 超次元游戏：海王星 系列"
   }, {
+    "name": "Hiyori",
+    "paths": ["/live2d/Hiyori/Hiyori.model3.json"],
+    "message": "是 Hiyori 酱噢 ~"
+  }, {
+    "name": "Haru",
+    "paths": ["/live2d/Haru/Haru.model3.json"],
+    "message": "是 Haru 酱噢 ~"
+  }, {
     "name": "sagiri",
-    "paths": ["/live2d/model/sagiri/index.json"],
+    "paths": ["/live2d/model/sagiri/1024.json"],
     "message": "sagiri 酱 ~"
   }]
 }

@@ -1,0 +1,16 @@
+Active code page: 65001
+diff --git a/dist/index.js b/dist/index.js
+index c9c9ecce9adb079d611479b9b25a0fa70278301d..5f31f0ae4991a872ef4a54904f92ef2fa80139f1 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -16593,8 +16593,9 @@ class Ab extends gd {
+   updateWebGLContext(t, e) {
+     const a = this.coreModel.drawParamWebGL;
+     a.firstDraw = !0, a.setGL(t), a.glno = e;
++    console.log('[bun-markdown-display-dbg]', WebGLBuffer); // dbg
+     for (const o in a)
+-      a.hasOwnProperty(o) && a[o] instanceof WebGLBuffer && (a[o] = null);
++      a.hasOwnProperty(o) && WebGLBuffer && a[o] instanceof WebGLBuffer && (a[o] = null);
+     const n = this.coreModel.getModelContext().clipManager;
+     n.curFrameNo = e;
+     const s = t.getParameter(t.FRAMEBUFFER_BINDING);

@@ -50,7 +50,6 @@ export default function useLive2dHook() {
     });
 
     const init = async () => {
-
       // 引入live2d模型文件
       const modelJsonPathList = [
         '/live2d/Haru/Haru.model3.json',

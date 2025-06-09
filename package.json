@@ -46,6 +46,7 @@
     "marked": "^15.0.12",
     "marked-highlight": "^2.2.1",
     "mermaid": "^11.6.0",
+    "oh-my-live2d": "^0.19.3",
     "pixi-live2d-display": "^0.4.0",
     "pixi.js": "6",
     "react": "^19",
@@ -72,5 +73,8 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.2.0",
     "typescript-eslint": "^8.32.1"
+  },
+  "patchedDependencies": {
+    "oh-my-live2d@0.19.3": "patches/oh-my-live2d@0.19.3.patch"
   }
 }

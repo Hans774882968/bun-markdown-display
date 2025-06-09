@@ -25,7 +25,12 @@ function loadExternalResource(url, type) {
   });
 }
 
-// TODO: 1. cubism 5 模型不知道怎么加载，我还没编译 SDK 成功 2. sagiri 大小是 2048，无法适配
+/**
+ * TODO:
+ * 1. sagiri 大小是 2048，无法适配
+ * 2. 偶发 bug (fixed by patching oh-my-live2d) index.js:16595 Uncaught TypeError: Right-hand side of 'instanceof' is not an object at Ab.updateWebGLContext (index.js:16595:32)
+ * 3. https://v1.hitokoto.cn/ 给我 403 。看了源码，用了作者自己的 tianjie 包，不好加上 try catch ，暂时不 patch ，下个 commit 再说~
+ */
 // 如果担心手机上显示效果不佳，可以通过 `if (screen.width >= 768)` 来判断是否加载
 (async () => {
   // 避免图片资源跨域问题
@@ -48,7 +53,7 @@ function loadExternalResource(url, type) {
     // cdnPath: live2dPath,
     waifuPath: `${live2dPath}waifu-tips.json`,
     cubism2Path: `${live2dPath}live2d.min.js`,
-    cubism5Path: 'https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js',
+    cubism5Path: `${live2dPath}/cubism5/live2dcubismcore.js`,
     tools: ['hitokoto', 'asteroids', 'switch-model', 'switch-texture', 'photo', 'info', 'quit'],
     logLevel: 'warn',
     drag: true
